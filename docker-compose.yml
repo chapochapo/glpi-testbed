@@ -285,6 +285,40 @@ services:
     restart: unless-stopped
     networks:
     - glpi_net_10_0_25
+  mysql_10_0_26:
+    image: mysql:8.0
+    container_name: glpi_mysql_10_0_26
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: glpi
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: glpipassword
+    volumes:
+    - mysql_data_10_0_26:/var/lib/mysql
+    healthcheck: *id001
+    restart: unless-stopped
+    networks:
+    - glpi_net_10_0_26
+  glpi_10_0_26:
+    image: glpi/glpi:10.0.26
+    container_name: glpi_10_0_26
+    ports:
+    - 127.0.0.1:10026:80
+    environment:
+      GLPI_DB_HOST: mysql_10_0_26
+      GLPI_DB_PORT: '3306'
+      GLPI_DB_NAME: glpi
+      GLPI_DB_USER: glpi
+      GLPI_DB_PASSWORD: glpipassword
+      GLPI_SKIP_AUTOUPDATE: 'true'
+    volumes:
+    - glpi_data_10_0_26:/var/glpi
+    depends_on:
+      mysql_10_0_26:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+    - glpi_net_10_0_26
   mysql_11_0_0:
     image: mysql:8.0
     container_name: glpi_mysql_11_0_0
@@ -557,6 +591,40 @@ services:
     restart: unless-stopped
     networks:
     - glpi_net_11_0_7
+  mysql_11_0_8:
+    image: mysql:8.0
+    container_name: glpi_mysql_11_0_8
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: glpi
+      MYSQL_USER: glpi
+      MYSQL_PASSWORD: glpipassword
+    volumes:
+    - mysql_data_11_0_8:/var/lib/mysql
+    healthcheck: *id001
+    restart: unless-stopped
+    networks:
+    - glpi_net_11_0_8
+  glpi_11_0_8:
+    image: glpi/glpi:11.0.8
+    container_name: glpi_11_0_8
+    ports:
+    - 127.0.0.1:11008:80
+    environment:
+      GLPI_DB_HOST: mysql_11_0_8
+      GLPI_DB_PORT: '3306'
+      GLPI_DB_NAME: glpi
+      GLPI_DB_USER: glpi
+      GLPI_DB_PASSWORD: glpipassword
+      GLPI_SKIP_AUTOUPDATE: 'true'
+    volumes:
+    - glpi_data_11_0_8:/var/glpi
+    depends_on:
+      mysql_11_0_8:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+    - glpi_net_11_0_8
 volumes:
   mysql_data_10_0_18: {}
   glpi_data_10_0_18: {}
@@ -574,6 +642,8 @@ volumes:
   glpi_data_10_0_24: {}
   mysql_data_10_0_25: {}
   glpi_data_10_0_25: {}
+  mysql_data_10_0_26: {}
+  glpi_data_10_0_26: {}
   mysql_data_11_0_0: {}
   glpi_data_11_0_0: {}
   mysql_data_11_0_1: {}
@@ -590,6 +660,8 @@ volumes:
   glpi_data_11_0_6: {}
   mysql_data_11_0_7: {}
   glpi_data_11_0_7: {}
+  mysql_data_11_0_8: {}
+  glpi_data_11_0_8: {}
 networks:
   glpi_net_10_0_18:
     driver: bridge
@@ -607,6 +679,8 @@ networks:
     driver: bridge
   glpi_net_10_0_25:
     driver: bridge
+  glpi_net_10_0_26:
+    driver: bridge
   glpi_net_11_0_0:
     driver: bridge
   glpi_net_11_0_1:
@@ -622,4 +696,6 @@ networks:
   glpi_net_11_0_6:
     driver: bridge
   glpi_net_11_0_7:
+    driver: bridge
+  glpi_net_11_0_8:
     driver: bridge
