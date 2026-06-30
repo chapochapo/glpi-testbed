@@ -56,7 +56,16 @@ Allow 60–90 seconds after `up -d` for all instances to finish installing.
 
 ### Adding a version
 
-Edit `generate-compose.py` and append the patch number to the relevant list, then regenerate:
+Sync automatically with Docker Hub (detects and adds any missing patch versions):
+
+```bash
+python3 update-versions.py
+
+# new containers start; existing ones are unaffected
+podman compose up -d
+```
+
+Or manually: append the patch number to `VERSIONS_10X` / `VERSIONS_11X` in `generate-compose.py`, then regenerate:
 
 ```bash
 # Edit generate-compose.py:
@@ -130,6 +139,10 @@ Port formula: `major * 1000 + patch` — e.g. 10.0.18 → 10018, 11.0.7 → 1100
 glpi-testbed/
 ├── generate-compose.py     version configuration and compose generator
 ├── docker-compose.yml      generated output — do not edit directly
+├── update-versions.py      syncs GLPI versions from Docker Hub, updates all three files above
+├── .github/
+│   └── workflows/
+│       └── update-glpi-versions.yml  opens a PR automatically every Monday when new versions appear
 └── README.md               this file
 ```
 
