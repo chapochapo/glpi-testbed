@@ -1,7 +1,7 @@
 # glpi-testbed
 > **This project was generated with the assistance of Claude (Anthropic).** The compose generator, container architecture, and auto-install logic were designed and debugged in collaboration with Claude Code.
 
-A local testing environment that runs 16 GLPI versions simultaneously as isolated containers, each fully installed and ready to use with no manual setup required. Covers GLPI 10.0.18–10.0.25 and 11.0.0–11.0.7. Images are pulled directly from the official [glpi/glpi](https://hub.docker.com/r/glpi/glpi) repository on Docker Hub.
+A local testing environment that runs 18 GLPI versions simultaneously as isolated containers, each fully installed and ready to use with no manual setup required. Covers GLPI 10.0.18–10.0.26 and 11.0.0–11.0.8. Images are pulled directly from the official [glpi/glpi](https://hub.docker.com/r/glpi/glpi) repository on Docker Hub.
 
 Every instance auto-installs its database on first start and is accessible on a predictable localhost port within about 60–90 seconds.
 
@@ -17,29 +17,29 @@ Every instance auto-installs its database on first start and is accessible on a 
 
 ### Hardware
 
-All 32 containers running simultaneously consume approximately:
+All 36 containers running simultaneously consume approximately:
 
-| | Per container | 16 containers |
+| | Per container | 18 containers |
 |---|---|---|
-| GLPI (Apache + PHP) | ~84 MB RAM | ~1.3 GB RAM |
-| MySQL 8.0 | ~539 MB RAM | ~8.4 GB RAM |
+| GLPI (Apache + PHP) | ~84 MB RAM | ~1.5 GB RAM |
+| MySQL 8.0 | ~539 MB RAM | ~9.7 GB RAM |
 | **Total** | | **~9.7 GB RAM** |
 
-- **RAM:** 12 GB free recommended (10 GB used by containers, 2 GB headroom for the OS)
-- **Disk:** ~17 GB for container images (16 GLPI images × ~1 GB each + one shared MySQL 8.0 image at ~820 MB) + ~5 GB for volume data after installation
+- **RAM:** 13 GB free recommended (11 GB used by containers, 2 GB headroom for the OS)
+- **Disk:** ~19 GB for container images (18 GLPI images × ~1 GB each + one shared MySQL 8.0 image at ~820 MB) + ~5 GB for volume data after installation
 
 > If RAM is limited, you can start a subset of instances:
 > ```bash
-> podman compose up -d glpi_11_0_7 mysql_11_0_7  # start only GLPI 11.0.7 and its database
+> podman compose up -d glpi_11_0_8 mysql_11_0_8  # start only GLPI 11.0.8 and its database
 > ```
 
 ## Usage
 
 ```bash
-# Pull all images (one-time, ~17 GB)
+# Pull all images (one-time, ~19 GB)
 podman compose pull
 
-# Start all 32 containers
+# Start all 36 containers
 podman compose up -d
 
 # Stop all containers (data is preserved in volumes)
@@ -106,7 +106,7 @@ podman compose down
 # delete all data volumes
 podman volume ls --format '{{.Name}}' | grep '^glpi_' | xargs podman volume rm
 
-# recreate all 32 containers
+# recreate all 36 containers
 podman compose up -d
 ```
 
@@ -122,6 +122,7 @@ podman compose up -d
 | 10.0.23 | http://localhost:10023 | glpi / glpi |
 | 10.0.24 | http://localhost:10024 | glpi / glpi |
 | 10.0.25 | http://localhost:10025 | glpi / glpi |
+| 10.0.26 | http://localhost:10026 | glpi / glpi |
 | 11.0.0  | http://localhost:11000 | glpi / glpi |
 | 11.0.1  | http://localhost:11001 | glpi / glpi |
 | 11.0.2  | http://localhost:11002 | glpi / glpi |
@@ -130,8 +131,9 @@ podman compose up -d
 | 11.0.5  | http://localhost:11005 | glpi / glpi |
 | 11.0.6  | http://localhost:11006 | glpi / glpi |
 | 11.0.7  | http://localhost:11007 | glpi / glpi |
+| 11.0.8  | http://localhost:11008 | glpi / glpi |
 
-Port formula: `major * 1000 + patch` — e.g. 10.0.18 → 10018, 11.0.7 → 11007.
+Port formula: `major * 1000 + patch` — e.g. 10.0.18 → 10018, 11.0.8 → 11008.
 
 ## Project file architecture
 
@@ -154,7 +156,7 @@ To change anything about how containers are configured — ports, credentials, M
 
 ### `docker-compose.yml`
 
-Generated output from `generate-compose.py`. Defines all 32 services (16 GLPI + 16 MySQL), 32 named volumes, and 16 isolated bridge networks. Commit this file so the environment can be reproduced without Python or pyyaml.
+Generated output from `generate-compose.py`. Defines all 36 services (18 GLPI + 18 MySQL), 36 named volumes, and 18 isolated bridge networks. Commit this file so the environment can be reproduced without Python or pyyaml.
 
 ## Container architecture
 
@@ -178,7 +180,7 @@ Each GLPI version runs as an isolated, self-contained stack:
 │      │  port → 10018:80  │          │
 │      └───────────────────┘          │
 └─────────────────────────────────────┘
-           × 16 versions
+           × 18 versions
 ```
 
 **Isolation:** each pair shares a dedicated bridge network. No GLPI container can reach another version's MySQL, and no two instances share any data.

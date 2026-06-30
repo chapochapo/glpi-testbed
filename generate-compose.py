@@ -14,8 +14,8 @@ except ImportError:
     sys.exit("pyyaml is required: pip install pyyaml")
 
 # ── Version configuration ─────────────────────────────────────────────────────
-VERSIONS_10X = [18, 19, 20, 21, 22, 23, 24, 25]   # 10.0.X patch numbers
-VERSIONS_11X = [0, 1, 2, 3, 4, 5, 6, 7]            # 11.0.X patch numbers
+VERSIONS_10X = [18, 19, 20, 21, 22, 23, 24, 25, 26]   # 10.0.X patch numbers
+VERSIONS_11X = [0, 1, 2, 3, 4, 5, 6, 7, 8]            # 11.0.X patch numbers
 
 # ── Credentials ───────────────────────────────────────────────────────────────
 DB_ROOT_PASS = "rootpassword"
